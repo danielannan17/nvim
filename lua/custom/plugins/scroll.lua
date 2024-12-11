@@ -8,7 +8,9 @@ return {
     version = '*', -- use latest release
     opts = {
       disabled = true,
-      mode = 'window',
+      options = {
+        mode = 'window',
+      },
 
       keymaps = {
         -- Enable the provided 'basic' keymaps

@@ -9,6 +9,8 @@ local function get_script_directory()
   return path:match '(.+[/\\])'
 end
 vim.cmd('source ' .. get_script_directory() .. '/remaps.vim')
+vim.cmd('source ' .. get_script_directory() .. '/customCommands.vim')
+
 vim.opt.termguicolors = true
 local function smart_undo()
   local start_pos = vim.api.nvim_buf_get_mark(0, '[')
@@ -31,6 +33,7 @@ vim.keymap.set('t', '<C-h>', '<C-\\><C-n><C-w><C-h>', { desc = 'Move focus to th
 vim.keymap.set('t', '<C-l>', '<C-\\><C-n><C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('t', '<C-j>', '<C-\\><C-n><C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('t', '<C-k>', '<C-\\><C-n><C-w><C-k>', { desc = 'Move focus to the upper window' })
+
 -- Automatically enter insert mode when entering a terminal window
 vim.api.nvim_create_autocmd('TermEnter', {
   pattern = '*',
@@ -43,6 +46,7 @@ return {
   'norcalli/nvim-colorizer.lua',
   'ggandor/leap.nvim',
   'ggandor/flit.nvim',
+  'sindrets/diffview.nvim',
   -- {
   --   'OXY2DEV/markview.nvim',
   --   lazy = false, -- Recommended
@@ -54,6 +58,64 @@ return {
   --   },
   -- },
   {
+    "debugloop/telescope-undo.nvim",
+    dependencies = { -- note how they're inverted to above example
+      {
+        "nvim-telescope/telescope.nvim",
+        dependencies = { "nvim-lua/plenary.nvim" },
+      },
+    },
+    keys = {
+      { -- lazy style key map
+        "<leader>su",
+        "<cmd>Telescope undo<cr>",
+        desc = "undo history",
+      },
+    },
+    opts = {
+      -- don't use `defaults = { }` here, do this in the main telescope spec
+      extensions = {
+        undo = {
+          saved_only = true
+        },
+        -- no other extensions here, they can have their own spec too
+      },
+    },
+    config = function(_, opts)
+      -- Calling telescope's setup from multiple specs does not hurt, it will happily merge the
+      -- configs for us. We won't use data, as everything is in it's own namespace (telescope
+      -- defaults, as well as each extension).
+      require("telescope").setup(opts)
+      require("telescope").load_extension("undo")
+    end,
+  },
+  {
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    opts = {
+      -- add any options here
+    },
+    dependencies = {
+      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+      "MunifTanjim/nui.nvim",
+      -- OPTIONAL:
+      --   `nvim-notify` is only needed, if you want to use the notification view.
+      --   If not available, we use `mini` as the fallback
+      "rcarriga/nvim-notify",
+    }
+  },
+  -- vs code like search and replace 
+  {
+    'MagicDuck/grug-far.nvim',
+    config = function()
+      require('grug-far').setup({
+        -- options, see Configuration section below
+        -- there are no required options atm
+        -- engine = 'ripgrep' is default, but 'astgrep' can be specified
+      });
+    end
+  },
+  {
     'nvimdev/dashboard-nvim',
     event = 'VimEnter',
     config = function()
@@ -63,6 +125,7 @@ return {
     end,
     dependencies = { { 'nvim-tree/nvim-web-devicons' } },
   },
+  -- Search grep grouped by file 
   {
     'fdschmidt93/telescope-egrepify.nvim',
     dependencies = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim' },
