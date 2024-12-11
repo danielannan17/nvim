@@ -6,13 +6,10 @@ let maplocalleader = " "
 vnoremap x "_x
 nnoremap x "_x
 
-" Yank to system clipboard
-nnoremap <leader>y "+y
-xnoremap <leader>y "+y
-
-" Paste from system clipboard
-nnoremap <leader>p "+p
-xnoremap <leader>p "+p
+inoremap <C-h> <Left>        
+inoremap <C-j> <Down>       
+inoremap <C-k> <Up>       
+inoremap <C-l> <Right>   
 
 " Map Tab to indent current line or selected lines
 nnoremap <Tab> >>
@@ -28,3 +25,11 @@ xnoremap K :move '<-2<CR>gv-gv
 
 " Paste without overwriting clipboard
 vnoremap p "_dP
+
+"Mapping Ctrl + s to save
+nnoremap <C-s> :w<CR>
+inoremap <C-s> <Esc>:w<CR>a
+vnoremap <C-s> <Esc>:w<CR>
+
+" Map Ctrl + p to search files
+

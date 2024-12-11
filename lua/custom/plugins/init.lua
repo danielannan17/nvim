@@ -10,23 +10,70 @@ local function get_script_directory()
 end
 vim.cmd('source ' .. get_script_directory() .. '/remaps.vim')
 vim.opt.termguicolors = true
+local function smart_undo()
+  local start_pos = vim.api.nvim_buf_get_mark(0, '[')
+  local cur_pos = vim.api.nvim_win_get_cursor(0)
+
+  -- Compare starting column with current column
+  local has_typed = start_pos[2] ~= cur_pos[2] - 1
+
+  if has_typed then
+    vim.cmd 'undo'
+  else
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>u', true, false, true), 'n', true)
+  end
+end
+
+vim.keymap.set('i', '<C-z>', smart_undo, { noremap = true, silent = true })
+
+vim.keymap.set('t', '<C-c>', '<C-c>')
+vim.keymap.set('t', '<C-h>', '<C-\\><C-n><C-w><C-h>', { desc = 'Move focus to the left window' })
+vim.keymap.set('t', '<C-l>', '<C-\\><C-n><C-w><C-l>', { desc = 'Move focus to the right window' })
+vim.keymap.set('t', '<C-j>', '<C-\\><C-n><C-w><C-j>', { desc = 'Move focus to the lower window' })
+vim.keymap.set('t', '<C-k>', '<C-\\><C-n><C-w><C-k>', { desc = 'Move focus to the upper window' })
+-- Automatically enter insert mode when entering a terminal window
+vim.api.nvim_create_autocmd('TermEnter', {
+  pattern = '*',
+  command = 'startinsert',
+})
+
 return {
+  'joshuavial/aider.nvim',
   'deris/vim-shot-f',
+  'norcalli/nvim-colorizer.lua',
   'ggandor/leap.nvim',
   'ggandor/flit.nvim',
+  -- {
+  --   'OXY2DEV/markview.nvim',
+  --   lazy = false, -- Recommended
+  --   -- ft = "markdown" -- If you decide to lazy-load anyway
+  --
+  --   dependencies = {
+  --     'nvim-treesitter/nvim-treesitter',
+  --     'nvim-tree/nvim-web-devicons',
+  --   },
+  -- },
   {
-    'declancm/cinnamon.nvim',
-    version = '*', -- use latest release
+    'nvimdev/dashboard-nvim',
+    event = 'VimEnter',
+    config = function()
+      require('dashboard').setup {
+        -- config
+      }
+    end,
+    dependencies = { { 'nvim-tree/nvim-web-devicons' } },
+  },
+  {
+    'fdschmidt93/telescope-egrepify.nvim',
+    dependencies = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim' },
+  },
+  {
+    'supermaven-inc/supermaven-nvim',
+    cmd = {
+      'SupermavenStart',
+    },
     opts = {
-      disabled = true,
-
-      keymaps = {
-        -- Enable the provided 'basic' keymaps
-        basic = true,
-        -- Enable the provided 'extra' keymaps
-        extra = true,
-      },
-      -- change default options here
+      --- Your configuration options
     },
   },
   { 'tenxsoydev/karen-yank.nvim', config = true },
@@ -72,26 +119,26 @@ return {
   },
   {
     'akinsho/bufferline.nvim',
-    version = "*",
+    version = '*',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
-      require("bufferline").setup({
+      require('bufferline').setup {
         options = {
-          separator_style = "slant", -- Customize separator style
+          separator_style = 'slant', -- Customize separator style
           show_buffer_close_icons = true,
           show_close_icon = true,
           always_show_bufferline = true,
-          diagnostics = "nvim_lsp", -- Show diagnostics from LSP
+          diagnostics = 'nvim_lsp', -- Show diagnostics from LSP
           offsets = {
             {
-              filetype = "neo-tree",
-              text = "File Explorer",
-              text_align = "center",
+              filetype = 'neo-tree',
+              text = 'File Explorer',
+              text_align = 'center',
               separator = true,
             },
           },
         },
-      })
+      }
     end,
-  }
+  },
 }
