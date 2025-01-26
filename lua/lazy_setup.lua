@@ -13,9 +13,10 @@ require("lazy").setup({
   },
   { import = "community" },
   { import = "plugins" },
+  {import = "custom.plugins"},
 } --[[@as LazySpec]], {
   -- Configure any other `lazy.nvim` configuration options here
-  install = { colorscheme = { "astrotheme", "habamax" } },
+  install = { colorscheme = { "vscode-nvim" } },
   ui = { backdrop = 100 },
   performance = {
     rtp = {
