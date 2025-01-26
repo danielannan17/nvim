@@ -3,7 +3,8 @@ vim.keymap.set('n', '<leader>sf', "<cmd>call sidebar#toggle('neo_tree_filesystem
 vim.keymap.set('n', '<leader>sg', "<cmd>call sidebar#toggle('neo_tree_git_status')<CR>", { desc = 'Open git status sidebar' })
 vim.keymap.set('n', '<leader>ss', "<cmd>call sidebar#toggle('grugfar')<CR>", { desc = 'Open search sidebar' })
 vim.keymap.set('n', '<leader>sb', "<cmd>call sidebar#toggle('neo_tree_buffers')<CR>", { desc = 'Open buffers sidebar' })
-
+vim.keymap.set('n', '<leader>at', "<cmd>call sidebar#toggle('aider')<CR>", { desc = 'Toggle aider terminal' })
+vim.keymap.set('n', '<leader>tt', "<cmd>call sidebar#toggle('toggleterm')<CR>", { desc = 'Toggle toggleterm' })
 return {
     {
         'brglng/vim-sidebar-manager',
@@ -20,6 +21,7 @@ return {
             \   filter: {nr -> getwinvar(nr, '&filetype') ==# 'grug-far'},
             \   open: 'lua require("my_grugfar_helper").toggle_open()',
             \   close: 'lua require("my_grugfar_helper").close()',
+            \   width: 60,
             \ }
 
             let g:sidebar.neo_tree_filesystem = #{
@@ -50,6 +52,22 @@ return {
             \   close: 'Neotree close',
             \   dont_close: 'neo_tree_.*'
             \ }
+
+            let g:sidebar.aider = #{
+            \   position: 'bottom',
+            \   filter: {nr -> getwinvar(nr, '&filetype') ==# 'snacks_terminal'},
+            \   open: 'AiderTerminalToggle',
+            \   close: 'AiderTerminalToggle',
+            \ }
+
+            let g:sidebar.toggleterm = #{
+            \   position: 'bottom',
+            \   filter: {nr -> getwinvar(nr, '&filetype') ==# 'toggleterm'},
+            \   open: 'ToggleTerm size=10 direction=horizontal',
+            \   close: 'ToggleTerm size=10 direction=horizontal',
+            \ }
+
+
           ]])
 
           -- Create a helper module to handle the instance management

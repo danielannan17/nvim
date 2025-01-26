@@ -1,10 +1,19 @@
 return {
+  {
+    "isak102/telescope-git-file-history.nvim",
+    dependencies = { "nvim-telescope/telescope.nvim" },
+    config = function()
+      vim.keymap.set('n', '<leader>gh', "<cmd>Telescope git_file_history<cr>", { desc = 'Open git file history' })
+    end
+  },
+
   -- vs code like search and replace 
   {
     'MagicDuck/grug-far.nvim',
     config = function()
       require('grug-far').setup({
         -- options, see Configuration section below
+        wrap = false,
         -- there are no required options atm
         -- engine = 'ripgrep' is default, but 'astgrep' can be specified
       })
