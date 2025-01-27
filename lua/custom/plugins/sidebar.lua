@@ -3,7 +3,7 @@ vim.keymap.set('n', '<leader>sf', "<cmd>call sidebar#toggle('neo_tree_filesystem
 vim.keymap.set('n', '<leader>sg', "<cmd>call sidebar#toggle('neo_tree_git_status')<CR>", { desc = 'Open git status sidebar' })
 vim.keymap.set('n', '<leader>ss', "<cmd>call sidebar#toggle('grugfar')<CR>", { desc = 'Open search sidebar' })
 vim.keymap.set('n', '<leader>sb', "<cmd>call sidebar#toggle('neo_tree_buffers')<CR>", { desc = 'Open buffers sidebar' })
-vim.keymap.set('n', '<leader>at', "<cmd>call sidebar#toggle('aider')<CR>", { desc = 'Toggle aider terminal' })
+vim.keymap.set('n', '<leader>ait', "<cmd>call sidebar#toggle('aider')<CR>", { desc = 'Toggle aider terminal' })
 vim.keymap.set('n', '<leader>tt', "<cmd>call sidebar#toggle('toggleterm')<CR>", { desc = 'Toggle toggleterm' })
 return {
     {
@@ -62,9 +62,9 @@ return {
 
             let g:sidebar.toggleterm = #{
             \   position: 'bottom',
-            \   filter: {nr -> getwinvar(nr, '&filetype') ==# 'toggleterm'},
-            \   open: 'ToggleTerm size=10 direction=horizontal',
-            \   close: 'ToggleTerm size=10 direction=horizontal',
+            \   filter: {nr -> getwinvar(nr, '&filetype') ==# 'toggleterm' && getwinvar(nr, 'sidebar_opened') == 1},
+            \   open: 'lua vim.cmd("ToggleTerm size=10 direction=horizontal") vim.wo.sidebar_opened = 1',
+            \   close: 'lua vim.wo.sidebar_opened = 0 vim.cmd("ToggleTerm size=10 direction=horizontal")',
             \ }
 
 

@@ -40,6 +40,15 @@ vim.api.nvim_create_autocmd('TermEnter', {
   command = 'startinsert',
 })
 
+-- Set GIT_EDITOR to use nvr if Neovim and nvr are available
+if vim.fn.has('nvim') == 1 and vim.fn.executable('nvr') == 1 then
+  vim.env.GIT_EDITOR = "nvr -cc split --remote-wait +'set bufhidden=wipe'"
+  print('GIT_EDITOR set to nvr')
+else
+  print('GIT_EDITOR not set')
+end
+
+
 return {
   'norcalli/nvim-colorizer.lua',
   'sindrets/diffview.nvim',
