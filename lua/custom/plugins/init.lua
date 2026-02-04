@@ -33,7 +33,11 @@ vim.keymap.set('t', '<C-h>', '<C-\\><C-n><C-w><C-h>', { desc = 'Move focus to th
 vim.keymap.set('t', '<C-l>', '<C-\\><C-n><C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('t', '<C-j>', '<C-\\><C-n><C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('t', '<C-k>', '<C-\\><C-n><C-w><C-k>', { desc = 'Move focus to the upper window' })
-
+-- Move with Ctrl+hjkl in insert mode
+vim.keymap.set('i', '<C-h>', '<Left>')
+vim.keymap.set('i', '<C-j>', '<Down>')
+vim.keymap.set('i', '<C-k>', '<Up>')
+vim.keymap.set('i', '<C-l>', '<Right>')
 -- Automatically enter insert mode when entering a terminal window
 vim.api.nvim_create_autocmd('TermEnter', {
   pattern = '*',
@@ -62,7 +66,19 @@ return {
   --     'nvim-tree/nvim-web-devicons',
   --   },
   -- },
+  -- Remember open file when reopening nvim
+  {
+    'rmagatti/auto-session',
+    lazy = false,
 
+    ---enables autocomplete for opts
+    ---@module 'auto-session'
+    ---@type AutoSession.Config
+    opts = {
+      suppressed_dirs = { '~/', '~/Projects', '~/Downloads', '/' },
+      -- log_level = 'debug',
+    },
+  },
 
   { 'tenxsoydev/karen-yank.nvim', config = true },
   {
