@@ -1,19 +1,28 @@
-
-vim.keymap.set('n', '<leader>sf', "<cmd>call sidebar#toggle('neo_tree_filesystem')<CR>", { desc = 'Open git status sidebar' })
-vim.keymap.set('n', '<leader>sg', "<cmd>call sidebar#toggle('neo_tree_git_status')<CR>", { desc = 'Open git status sidebar' })
-vim.keymap.set('n', '<leader>ss', "<cmd>call sidebar#toggle('grugfar')<CR>", { desc = 'Open search sidebar' })
-vim.keymap.set('n', '<leader>sb', "<cmd>call sidebar#toggle('neo_tree_buffers')<CR>", { desc = 'Open buffers sidebar' })
-vim.keymap.set('n', '<leader>ait', "<cmd>call sidebar#toggle('aider')<CR>", { desc = 'Toggle aider terminal' })
-vim.keymap.set('n', '<leader>tt', "<cmd>call sidebar#toggle('toggleterm')<CR>", { desc = 'Toggle toggleterm' })
+vim.keymap.set(
+  "n",
+  "<leader>sf",
+  "<cmd>call sidebar#toggle('neo_tree_filesystem')<CR>",
+  { desc = "Open git status sidebar" }
+)
+vim.keymap.set(
+  "n",
+  "<leader>sg",
+  "<cmd>call sidebar#toggle('neo_tree_git_status')<CR>",
+  { desc = "Open git status sidebar" }
+)
+vim.keymap.set("n", "<leader>ss", "<cmd>call sidebar#toggle('grugfar')<CR>", { desc = "Open search sidebar" })
+vim.keymap.set("n", "<leader>sb", "<cmd>call sidebar#toggle('neo_tree_buffers')<CR>", { desc = "Open buffers sidebar" })
+vim.keymap.set("n", "<leader>ait", "<cmd>call sidebar#toggle('aider')<CR>", { desc = "Toggle aider terminal" })
+vim.keymap.set("n", "<leader>tt", "<cmd>call sidebar#toggle('toggleterm')<CR>", { desc = "Toggle toggleterm" })
 return {
-    {
-        'brglng/vim-sidebar-manager',
-        config = function()
-          -- Create a module-level variable to store the instance name
-          local M = {}
-          _G.grugfar_sidebar_instance = nil
+  {
+    "brglng/vim-sidebar-manager",
+    config = function()
+      -- Create a module-level variable to store the instance name
+      local M = {}
+      _G.grugfar_sidebar_instance = nil
 
-          vim.cmd([[
+      vim.cmd [[
             let g:sidebar = {}  " Initialize the dictionary first
 
             let g:sidebar.grugfar = #{
@@ -53,47 +62,32 @@ return {
             \   dont_close: 'neo_tree_.*'
             \ }
 
-            let g:sidebar.aider = #{
-            \   position: 'bottom',
-            \   filter: {nr -> getwinvar(nr, '&filetype') ==# 'snacks_terminal'},
-            \   open: 'AiderTerminalToggle',
-            \   close: 'AiderTerminalToggle',
-            \ }
+          ]]
 
-            let g:sidebar.toggleterm = #{
-            \   position: 'bottom',
-            \   filter: {nr -> getwinvar(nr, '&filetype') ==# 'toggleterm' && getwinvar(nr, 'sidebar_opened') == 1},
-            \   open: 'lua vim.cmd("ToggleTerm size=10 direction=horizontal") vim.wo.sidebar_opened = 1',
-            \   close: 'lua vim.wo.sidebar_opened = 0 vim.cmd("ToggleTerm size=10 direction=horizontal")',
-            \ }
+      -- Create a helper module to handle the instance management
+      local helper = {}
 
+      function helper.toggle_open()
+        if not _G.grugfar_sidebar_instance then
+          -- First time opening - create new instance
 
-          ]])
-
-          -- Create a helper module to handle the instance management
-          local helper = {}
-          
-          function helper.toggle_open()
-            if not _G.grugfar_sidebar_instance then
-              -- First time opening - create new instance
-              
-              _G.grugfar_sidebar_instance = require('grug-far').open({ instanceName = "sidebar" })
-            --   print("Created new grug-far instance: " .. _G.grugfar_sidebar_instance)
-            else
-              -- Reuse existing instance
-            --   print("Reusing grug-far instance: " .. _G.grugfar_sidebar_instance)
-              require('grug-far').open_instance(_G.grugfar_sidebar_instance)
-            end
-          end
-
-          function helper.close()
-            -- print("Closing grug-far instance: " .. _G.grugfar_sidebar_instance)
-            require('grug-far').close_instance(_G.grugfar_sidebar_instance)
-          end
-
-          -- Make the helper available globally
-          package.loaded['my_grugfar_helper'] = helper
+          _G.grugfar_sidebar_instance = require("grug-far").open { instanceName = "sidebar" }
+          --   print("Created new grug-far instance: " .. _G.grugfar_sidebar_instance)
+        else
+          -- Reuse existing instance
+          --   print("Reusing grug-far instance: " .. _G.grugfar_sidebar_instance)
+          require("grug-far").open_instance(_G.grugfar_sidebar_instance)
         end
-    },
-    "mbbill/undotree"
+      end
+
+      function helper.close()
+        -- print("Closing grug-far instance: " .. _G.grugfar_sidebar_instance)
+        require("grug-far").close_instance(_G.grugfar_sidebar_instance)
+      end
+
+      -- Make the helper available globally
+      package.loaded["my_grugfar_helper"] = helper
+    end,
+  },
+  "mbbill/undotree",
 }
