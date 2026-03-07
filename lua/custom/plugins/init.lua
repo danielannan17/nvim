@@ -33,19 +33,27 @@ vim.keymap.set('t', '<C-h>', '<C-\\><C-n><C-w><C-h>', { desc = 'Move focus to th
 vim.keymap.set('t', '<C-l>', '<C-\\><C-n><C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('t', '<C-j>', '<C-\\><C-n><C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('t', '<C-k>', '<C-\\><C-n><C-w><C-k>', { desc = 'Move focus to the upper window' })
-
+-- Move with Ctrl+hjkl in insert mode
+vim.keymap.set('i', '<C-h>', '<Left>')
+vim.keymap.set('i', '<C-j>', '<Down>')
+vim.keymap.set('i', '<C-k>', '<Up>')
+vim.keymap.set('i', '<C-l>', '<Right>')
 -- Automatically enter insert mode when entering a terminal window
 vim.api.nvim_create_autocmd('TermEnter', {
   pattern = '*',
   command = 'startinsert',
 })
 
+-- -- Set GIT_EDITOR to use nvr if Neovim and nvr are available
+-- if vim.fn.has 'nvim' == 1 and vim.fn.executable 'nvr' == 1 then
+--   vim.env.GIT_EDITOR = 'nvr -cc split --remote-wait +'set bufhidden=wipe''
+--   print 'GIT_EDITOR set to nvr'
+-- else
+--   print 'GIT_EDITOR not set'
+-- end
+
 return {
-  'joshuavial/aider.nvim',
-  'deris/vim-shot-f',
   'norcalli/nvim-colorizer.lua',
-  'ggandor/leap.nvim',
-  'ggandor/flit.nvim',
   'sindrets/diffview.nvim',
   -- {
   --   'OXY2DEV/markview.nvim',
@@ -57,88 +65,20 @@ return {
   --     'nvim-tree/nvim-web-devicons',
   --   },
   -- },
+  -- Remember open file when reopening nvim
   {
-    "debugloop/telescope-undo.nvim",
-    dependencies = { -- note how they're inverted to above example
-      {
-        "nvim-telescope/telescope.nvim",
-        dependencies = { "nvim-lua/plenary.nvim" },
-      },
-    },
-    keys = {
-      { -- lazy style key map
-        "<leader>su",
-        "<cmd>Telescope undo<cr>",
-        desc = "undo history",
-      },
-    },
+    'rmagatti/auto-session',
+    lazy = false,
+
+    ---enables autocomplete for opts
+    ---@module 'auto-session'
+    ---@type AutoSession.Config
     opts = {
-      -- don't use `defaults = { }` here, do this in the main telescope spec
-      extensions = {
-        undo = {
-          saved_only = true
-        },
-        -- no other extensions here, they can have their own spec too
-      },
-    },
-    config = function(_, opts)
-      -- Calling telescope's setup from multiple specs does not hurt, it will happily merge the
-      -- configs for us. We won't use data, as everything is in it's own namespace (telescope
-      -- defaults, as well as each extension).
-      require("telescope").setup(opts)
-      require("telescope").load_extension("undo")
-    end,
-  },
-  {
-    "folke/noice.nvim",
-    event = "VeryLazy",
-    opts = {
-      -- add any options here
-    },
-    dependencies = {
-      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-      "MunifTanjim/nui.nvim",
-      -- OPTIONAL:
-      --   `nvim-notify` is only needed, if you want to use the notification view.
-      --   If not available, we use `mini` as the fallback
-      "rcarriga/nvim-notify",
-    }
-  },
-  -- vs code like search and replace 
-  {
-    'MagicDuck/grug-far.nvim',
-    config = function()
-      require('grug-far').setup({
-        -- options, see Configuration section below
-        -- there are no required options atm
-        -- engine = 'ripgrep' is default, but 'astgrep' can be specified
-      });
-    end
-  },
-  {
-    'nvimdev/dashboard-nvim',
-    event = 'VimEnter',
-    config = function()
-      require('dashboard').setup {
-        -- config
-      }
-    end,
-    dependencies = { { 'nvim-tree/nvim-web-devicons' } },
-  },
-  -- Search grep grouped by file 
-  {
-    'fdschmidt93/telescope-egrepify.nvim',
-    dependencies = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim' },
-  },
-  {
-    'supermaven-inc/supermaven-nvim',
-    cmd = {
-      'SupermavenStart',
-    },
-    opts = {
-      --- Your configuration options
+      suppressed_dirs = { '~/', '~/Projects', '~/Downloads', '/' },
+      -- log_level = 'debug',
     },
   },
+
   { 'tenxsoydev/karen-yank.nvim', config = true },
   {
     'kdheepak/lazygit.nvim',
@@ -167,9 +107,7 @@ return {
       { 'nvim-telescope/telescope.nvim' },
       -- {'ibhagwan/fzf-lua'},
     },
-    config = function()
-      require('neoclip').setup()
-    end,
+    config = function() require('neoclip').setup() end,
   },
   {
     'folke/todo-comments.nvim',
