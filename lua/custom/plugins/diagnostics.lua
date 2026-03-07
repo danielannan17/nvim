@@ -98,3 +98,5 @@ end, {})
 
 vim.keymap.set('n', '<leader>DD', '<cmd>ProjectLint<CR>', { desc = 'Run project-wide ESLint' })
 vim.keymap.set('n', '<leader>Df', '<cmd>!npx eslint --fix 2>/dev/null %<CR>', { desc = 'Fix ESLint issues in current file' })
+
+return {}
