@@ -40,6 +40,7 @@ return {
     "coder/claudecode.nvim",
     dependencies = { "folke/snacks.nvim" },
     opts = {
+      terminal_cmd = "tmux new-session -A -s claude-code claude \\; set status off",
       terminal = {
         ---@module "snacks"
         ---@type snacks.win.Config|{}
