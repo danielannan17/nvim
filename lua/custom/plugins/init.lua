@@ -12,6 +12,8 @@ vim.cmd('source ' .. get_script_directory() .. '/remaps.vim')
 vim.cmd('source ' .. get_script_directory() .. '/customCommands.vim')
 
 vim.opt.termguicolors = true
+vim.opt.title = true
+vim.opt.titlestring = 'NVIM - %t'
 local function smart_undo()
   local start_pos = vim.api.nvim_buf_get_mark(0, '[')
   local cur_pos = vim.api.nvim_win_get_cursor(0)

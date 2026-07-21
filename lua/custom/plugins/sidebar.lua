@@ -12,7 +12,6 @@ vim.keymap.set(
 )
 vim.keymap.set("n", "<leader>ss", "<cmd>call sidebar#toggle('grugfar')<CR>", { desc = "Open search sidebar" })
 vim.keymap.set("n", "<leader>sb", "<cmd>call sidebar#toggle('neo_tree_buffers')<CR>", { desc = "Open buffers sidebar" })
-vim.keymap.set("n", "<leader>ait", "<cmd>call sidebar#toggle('aider')<CR>", { desc = "Toggle aider terminal" })
 vim.keymap.set("n", "<leader>tt", "<cmd>call sidebar#toggle('toggleterm')<CR>", { desc = "Toggle toggleterm" })
 return {
   {
