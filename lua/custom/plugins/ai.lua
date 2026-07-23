@@ -35,27 +35,21 @@ local window_mappings = {}
 -- })
 local toggle_key = "<C-.>"
 
--- Inside a container, claude runs in a tmux session named after the project
--- directory, so each project gets its own session and `destroy-unattached`
--- ends that session as soon as nvim closes the terminal. tmux also avoids the
--- underlining glitch in nvim + iTerm2.
+-- Claude runs in the sandbox container inside a tmux session named after the
+-- project directory. Killing the docker CLI never kills the exec'd process,
+-- so a host-side HUP/EXIT trap kills that project's tmux session when the
+-- terminal tab (and nvim) closes. LANG=C.utf8 keeps tmux rendering non-ASCII
+-- glyphs (with a non-UTF-8 locale it draws them as underscores).
 --
--- On the host, claude runs in the sandbox container via `docker exec`, wrapped
--- in a container-side tmux session. Killing the docker CLI never kills the
--- exec'd process, so a host-side HUP/EXIT trap kills that project's tmux
--- session when the terminal tab (and nvim) closes.
-local function in_container()
-  return vim.uv.fs_stat "/.dockerenv" ~= nil or vim.uv.fs_stat "/run/.containerenv" ~= nil or vim.env.container ~= nil
-end
+-- Inside the sandbox image this command is replaced with a direct claude
+-- invocation by claude-container's terminal_cmd.patch.
 
 return {
   {
     "coder/claudecode.nvim",
     dependencies = { "folke/snacks.nvim" },
     opts = {
-      terminal_cmd = in_container()
-          and 'tmux new-session -A -s "claude-$(basename "$PWD" | tr . _)" claude \\; set-option destroy-unattached on \\; set status off'
-        or [[sh -c 's="claude-$(basename "$PWD" | tr . _)"; trap "docker exec claude-sandbox tmux kill-session -t \"$s\" 2>/dev/null" HUP EXIT; docker exec -it -w "$PWD" claude-sandbox tmux new-session -A -s "$s" claude \; set status off']],
+      terminal_cmd = [[sh -c 's="claude-$(basename "$PWD" | tr . _)"; trap "docker exec claude-sandbox tmux kill-session -t \"$s\" 2>/dev/null" HUP EXIT; docker exec -it -w "$PWD" -e LANG=C.utf8 claude-sandbox tmux new-session -A -s "$s" claude \; set status off']],
       terminal = {
         ---@module "snacks"
         ---@type snacks.win.Config|{}
